@@ -1,21 +1,20 @@
 #!/usr/bin/python3
-"""web server distribution
-    """
+
+"""Fabric script to generate a .tgz archive of web_static."""
+
 from fabric.api import local
-import tarfile
-import os.path
-import re
 from datetime import datetime
 
 
 def do_pack():
-    """distributes an archive to your web servers
-    """
-    target = local("mkdir -p versions")
-    name = str(datetime.now()).replace(" ", '')
-    opt = re.sub(r'[^\w\s]', '', name)
-    tar = local('tar -cvzf versions/web_static_{}.tgz web_static'.format(opt))
-    if os.path.exists("./versions/web_static_{}.tgz".format(opt)):
-        return os.path.normpath("/versions/web_static_{}.tgz".format(opt))
-    else:
-        return None
+
+    """Create a .tgz archive from the contents of web_static folder."""
+
+    m_date = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    file_path = "versions/web_static_{}.tgz".format(m_date)
+    try:
+        local('mkdir -p versions')
+        local('tar -cvzf {} web_static'.format(file_path))
+        return file_path
+    except:
+        return none
